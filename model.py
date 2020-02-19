@@ -10,13 +10,13 @@ class Network(nn.Module):
         #Stokes I at N_lambda wavelengths 
         
         self.C1 = nn.Conv1d(7,7,3)
-        self.P1 = nn.Pool1d(2)
+        #self.P1 = nn.Pool1d(2)
         self.C2 = nn.Conv1d(7,14,3)
-        self.P2 = nn.Pool1d(2)
+        #self.P2 = nn.Pool1d(2)
         self.F1 = nn.Flatten()
 
-        self.C2 = nn.Linear(hidden_size, hidden_size)
-        self.C3 = nn.Linear(hidden_size, output_size)
+        self.D1 = nn.Linear(N_depths*14, 60)
+        self.D2 = nn.Linear(60,N_lambda)
 
         self.relu = nn.ReLU(inplace=True)
 
@@ -25,7 +25,11 @@ class Network(nn.Module):
         out = self.relu(out)
         out = self.C2(out)
         out = self.relu(out)
-        out = self.C3(out)
+        out = self.F1(out)
+        out = self.D1(out)
+        out = self.relu(out)
+        out = self.D2(out)
+        out = self.relu(out)
             
         return out
     
